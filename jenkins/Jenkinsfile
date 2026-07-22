@@ -21,7 +21,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image for Flask app...'
-                sh 'docker build -t $DOCKER_IMAGE:$IMAGE_TAG -f backend/Dockerfile .'
+                sh 'docker build --no-cache -t $DOCKER_IMAGE:$IMAGE_TAG -f backend/Dockerfile .'
                 sh 'docker tag $DOCKER_IMAGE:$IMAGE_TAG $DOCKER_IMAGE:latest'
             }
         }
