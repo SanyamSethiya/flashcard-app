@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials')   // Jenkins credentials ID
-        DOCKER_IMAGE = "SanyamSethiya/recall-flashcards"
+        DOCKER_IMAGE = "sanyamsethiya/recall-flashcards"
         IMAGE_TAG = "${BUILD_NUMBER}"
         AWS_EC2_HOST = credentials('aws-ec2-host')                      // e.g. ubuntu@ec2-xx-xx-xx-xx.compute.amazonaws.com
         SSH_CREDENTIALS = 'aws-ec2-ssh-key'                              // Jenkins SSH key credential ID
