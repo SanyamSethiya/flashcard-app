@@ -1,0 +1,80 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials')   // Jenkins credential ID
+        DOCKER_IMAGE = "yourdockerhubusername/recall-flashcards"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        AWS_EC2_HOST = credentials('aws-ec2-host')                      // e.g. ubuntu@ec2-xx-xx-xx-xx.compute.amazonaws.com
+        SSH_CREDENTIALS = 'aws-ec2-ssh-key'                              // Jenkins SSH key credential ID
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Pulling latest code from repository...'
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image for Flask app...'
+                sh 'docker build -t $DOCKER_IMAGE:$IMAGE_TAG -f backend/Dockerfile .'
+                sh 'docker tag $DOCKER_IMAGE:$IMAGE_TAG $DOCKER_IMAGE:latest'
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                sh 'echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                echo 'Pushing image to Docker Hub...'
+                sh 'docker push $DOCKER_IMAGE:$IMAGE_TAG'
+                sh 'docker push $DOCKER_IMAGE:latest'
+            }
+        }
+
+        stage('Deploy to AWS EC2') {
+            steps {
+                echo 'Deploying to AWS EC2 via SSH...'
+                sshagent(credentials: [SSH_CREDENTIALS]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no $AWS_EC2_HOST '
+                            cd /home/ubuntu/recall-app &&
+                            git pull origin main &&
+                            docker pull $DOCKER_IMAGE:latest &&
+                            docker compose down &&
+                            docker compose up -d
+                        '
+                    """
+                }
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                echo 'Verifying deployment health...'
+                sh 'sleep 10'
+                sh 'curl -f http://$AWS_EC2_HOST:5000/health || exit 1'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Pipeline completed successfully — Recall app is live.'
+        }
+        failure {
+            echo '❌ Pipeline failed. Check logs above.'
+        }
+        always {
+            sh 'docker logout'
+        }
+    }
+}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Recall — Remember more, forget less{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <span class="eyebrow">Spaced Repetition Engine</span>
+        <h1>Your memory,<br><span class="glow">scheduled.</span></h1>
+        <p class="lede">
+            Recall decides exactly when you're about to forget something —
+            and puts it back in front of you at that precise moment.
+            No cramming. No wasted reviews. Just cards, timed by science.
+        </p>
+        <div class="hero-actions">
+            <a href="{{ url_for('add_card') }}" class="btn btn-primary">Create your first card</a>
+            <a href="{{ url_for('review') }}" class="btn btn-ghost">Start reviewing</a>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="stack-card card-back-2"></div>
+        <div class="stack-card card-back-1"></div>
+        <div class="flip-card hero-flip-card" id="heroCard" onclick="flipHero()">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <span class="stack-label">Due today</span>
+                    <p class="stack-question">What is Docker?</p>
+                    <span class="stack-hint">tap to flip →</span>
+                </div>
+                <div class="flip-card-back">
+                    <span class="stack-label">Answer</span>
+                    <p>A platform to build, ship, and run apps inside lightweight containers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <div class="step">
+        <span class="step-mark">Create</span>
+        <p>Add a flashcard with a question and answer, tagged by subject.</p>
+    </div>
+    <div class="step">
+        <span class="step-mark">Recall</span>
+        <p>Review cards due today. Rate honestly: Again, Hard, Good, or Easy.</p>
+    </div>
+    <div class="step">
+        <span class="step-mark">Reschedule</span>
+        <p>Recall's algorithm pushes the next review further out each time you remember well.</p>
+    </div>
+</section>
+
+<section class="explainer">
+    <span class="eyebrow">How Recall works</span>
+    <h2>One card, on a schedule that adapts to you.</h2>
+
+    <div class="explainer-grid">
+        <div class="explainer-item">
+            <span class="explainer-num">1</span>
+            <p><strong>Add a card.</strong> It's due for review immediately — you'll see it the first time you open the Review tab.</p>
+        </div>
+        <div class="explainer-item">
+            <span class="explainer-num">2</span>
+            <p><strong>First review is fixed.</strong> Whatever you rate it the first time (as long as it's not "Again"), it comes back <strong>tomorrow</strong> — no exceptions on review one.</p>
+        </div>
+        <div class="explainer-item">
+            <span class="explainer-num">3</span>
+            <p><strong>From then on, your rating decides the pace:</strong></p>
+        </div>
+    </div>
+
+    <div class="rating-explainer">
+        <div class="rating-card rate-again-card">
+            <span class="rating-name">Again</span>
+            <p>You forgot it. Progress resets completely — the card comes back <strong>tomorrow</strong>, as if it were new.</p>
+        </div>
+        <div class="rating-card rate-hard-card">
+            <span class="rating-name">Hard</span>
+            <p>You struggled. The card's "ease" drops slightly, so it will keep coming back <strong>more frequently</strong> until it gets easier.</p>
+        </div>
+        <div class="rating-card rate-good-card">
+            <span class="rating-name">Good</span>
+            <p>You remembered it normally. The gap before the next review <strong>grows steadily</strong> (e.g. 1 day → 6 days → ~15 days...).</p>
+        </div>
+        <div class="rating-card rate-easy-card">
+            <span class="rating-name">Easy</span>
+            <p>It was effortless. The card's "ease" increases, so it will show up <strong>later and less often</strong> — you've basically mastered it.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

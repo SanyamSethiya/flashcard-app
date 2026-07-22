@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Recall{% endblock %}
+{% block content %}
+<section class="dashboard-section">
+    <div class="dashboard-header">
+        <div>
+            <span class="eyebrow">Your deck</span>
+            <h1>{{ total }} cards, {{ due_count }} due today.</h1>
+        </div>
+        {% if streak > 0 %}
+        <span class="streak-badge">🔥 {{ streak }}-day streak</span>
+        {% endif %}
+    </div>
+
+    {% if categories %}
+    <div class="category-filter">
+        <a href="{{ url_for('dashboard') }}" class="filter-chip {% if selected_category == 'all' %}active{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="{{ url_for('dashboard', category=cat) }}" class="filter-chip {% if selected_category == cat %}active{% endif %}">{{ cat }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="deck-grid">
+        {% for card in cards %}
+        <div class="deck-item">
+            <span class="deck-status {% if card.next_review_date <= now %}due{% else %}upcoming{% endif %}"
+                  title="{% if card.next_review_date <= now %}Due today{% else %}Not due yet{% endif %}"></span>
+            <span class="deck-tag">{{ card.category }}</span>
+            <p class="deck-question">{{ card.question }}</p>
+
+            <div class="deck-progress" title="Mastery level">
+                <div class="deck-progress-fill" style="width: {{ ((card.ease_factor - 1.3) / (3.0 - 1.3) * 100) | round(0, 'floor') }}%;"></div>
+            </div>
+
+            <div class="deck-meta">
+                <span>Reviewed {{ card.repetitions }}x</span>
+                <span class="deck-date">Next: {{ card.next_review_date.strftime('%d %b') }}</span>
+            </div>
+
+            <div class="deck-actions">
+                <a href="{{ url_for('edit_card', card_id=card.id) }}" class="deck-btn">Edit</a>
+                <form method="POST" action="{{ url_for('delete_card', card_id=card.id) }}" class="delete-form">
+                    <button type="submit" class="deck-btn delete-btn">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>No cards yet. <a href="{{ url_for('add_card') }}">Create your first one →</a></p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

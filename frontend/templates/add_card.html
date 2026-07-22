@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}New Card — Recall{% endblock %}
+{% block content %}
+<section class="form-section">
+    <span class="eyebrow">New card</span>
+    <h1>Teach it once.</h1>
+    <p class="lede-small">Write the question the way you'd want to be asked it in three weeks.</p>
+
+    <form method="POST" class="card-form" action="{{ url_for('add_card') }}">
+        <label for="question">Question</label>
+        <textarea id="question" name="question" rows="3" placeholder="e.g. What problem does Docker Compose solve?" required></textarea>
+
+        <label for="answer">Answer</label>
+        <textarea id="answer" name="answer" rows="3" placeholder="e.g. It orchestrates multiple containers as a single application." required></textarea>
+
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" placeholder="e.g. DevOps, Geography, Biology" value="General">
+
+        <button type="submit" class="btn btn-primary btn-full">Add to deck</button>
+    </form>
+</section>
+{% endblock %}

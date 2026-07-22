@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Edit Card — Recall{% endblock %}
+{% block content %}
+<section class="form-section">
+    <span class="eyebrow">Edit card</span>
+    <h1>Refine it.</h1>
+    <p class="lede-small">Editing won't reset its review schedule — just the content.</p>
+
+    <form method="POST" class="card-form" action="{{ url_for('edit_card', card_id=card.id) }}">
+        <label for="question">Question</label>
+        <textarea id="question" name="question" rows="3" required>{{ card.question }}</textarea>
+
+        <label for="answer">Answer</label>
+        <textarea id="answer" name="answer" rows="3" required>{{ card.answer }}</textarea>
+
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" value="{{ card.category }}">
+
+        <button type="submit" class="btn btn-primary btn-full">Save changes</button>
+    </form>
+</section>
+{% endblock %}

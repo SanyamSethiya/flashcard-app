@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Review — Recall{% endblock %}
+{% block content %}
+<section class="review-section">
+    {% if card %}
+        <span class="eyebrow">{{ card.category }}</span>
+        <div class="flip-card" id="flipCard" onclick="flipCard()">
+            <div class="flip-card-inner" id="flipInner">
+                <div class="flip-card-front">
+                    <span class="stack-label">Question</span>
+                    <p>{{ card.question }}</p>
+                    <span class="stack-hint">tap card to reveal answer</span>
+                </div>
+                <div class="flip-card-back">
+                    <span class="stack-label">Answer</span>
+                    <p>{{ card.answer }}</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('submit_review') }}" class="rating-form" id="ratingForm">
+            <input type="hidden" name="card_id" value="{{ card.id }}">
+            <p class="rate-prompt">How well did you remember it?</p>
+            <div class="rating-buttons">
+                <button type="submit" name="quality" value="0" class="rate-btn rate-again">Again</button>
+                <button type="submit" name="quality" value="1" class="rate-btn rate-hard">Hard</button>
+                <button type="submit" name="quality" value="2" class="rate-btn rate-good">Good</button>
+                <button type="submit" name="quality" value="3" class="rate-btn rate-easy">Easy</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <span class="eyebrow">All caught up</span>
+            <h1>Nothing due right now.</h1>
+            <p class="lede-small">Come back later, or add a new card to keep building your deck.</p>
+            <a href="{{ url_for('add_card') }}" class="btn btn-primary">Add a card</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
