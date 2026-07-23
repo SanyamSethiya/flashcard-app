@@ -26,3 +26,6 @@ Thumbs.db
 
 # Jenkins workspace artifacts
 *.pem
+
+# Personal deployment notes - not for public repo
+deployment-steps.md
